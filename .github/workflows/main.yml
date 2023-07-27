@@ -8,7 +8,7 @@ on:
 jobs:
   update_dependency:
     runs-on: ubuntu-latest
-    
+
     env:
       ACTIONS_STEP_DEBUG: true
 
@@ -24,12 +24,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Get changed version
+        id: get_version
+        run: |
+          CHANGED_VERSION=$(git show HEAD:package.json | jq -r '.version')
+          echo "::set-output name=version::$CHANGED_VERSION"
+          
       - name: Run updateDependency script
         run: |
-          git diff $(git rev-list --max-parents=0 HEAD) -- package.json > package-changes.diff
-
-          CHANGED_VERSION=$(grep -o -m 1 '"version": ".*"' package-changes.diff | grep -o '".*"' | sed 's/"//g')
-
+          CHANGED_VERSION=${{ steps.get_version.outputs.version }}
           if [ ! -z "$CHANGED_VERSION" ]; then
-            node .github/workflows/updateDependencyScript.js "$CHANGED_VERSION"
+            node .github/workflows/script.js "$CHANGED_VERSION"
           fi
