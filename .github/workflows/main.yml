@@ -23,7 +23,7 @@ jobs:
 
       - name: Run updateDependency script
         run: |
-          git diff HEAD^ -- package.json > package-changes.diff
+          git diff $(git rev-list --max-parents=0 HEAD) -- package.json > package-changes.diff
 
           CHANGED_VERSION=$(grep -o -m 1 '"version": ".*"' package-changes.diff | grep -o '".*"' | sed 's/"//g')
 
