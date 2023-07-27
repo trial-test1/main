@@ -14,8 +14,8 @@ async function updateDependency(dependedResources, newVersion) {
     for (const [organization, repos] of Object.entries(dependedResources)) {
       for (const repo of repos) {
         try {
-          const { data: packageB } = await octokit.request(`GET /repos/${organization}/${repo}/contents/package.json`);
-          const packageBContent = Buffer.from(packageB.content, 'base64').toString('utf-8');
+          const { data: package } = await octokit.request(`GET /repos/${organization}/${repo}/contents/package.json`);
+          const packageBContent = Buffer.from(package.content, 'base64').toString('utf-8');
           const packageBJSON = JSON.parse(packageBContent);
 
           packageBJSON.devDependencies['test-a'] = newVersion;
@@ -30,7 +30,7 @@ async function updateDependency(dependedResources, newVersion) {
               Authorization: `Bearer YOUR_GITHUB_TOKEN`,
             },
             content: Buffer.from(updatedPackageBContent).toString('base64'),
-            sha: packageB.sha,
+            sha: package.sha,
             message: 'Update projectA dependency in projectB',
             committer: {
               name: 'Arsen Kozariv',
