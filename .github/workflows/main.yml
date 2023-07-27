@@ -34,5 +34,5 @@ jobs:
         run: |
           CHANGED_VERSION=${{ steps.get_version.outputs.version }}
           if [ ! -z "$CHANGED_VERSION" ]; then
-            node .github/workflows/script.js "$CHANGED_VERSION"
+            node script.js "$CHANGED_VERSION"
           fi
