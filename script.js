@@ -11,7 +11,7 @@ async function updateDependency(dependedResources, newVersion) {
   try {
     console.log(newVersion);
 
-    Object.entries(dependedResources).forEach(async ([organization, repos]) => {
+    for (const [organization, repos] of Object.entries(dependedResources)) {
       for (const repo of repos) {
         try {
           const { data: packageB } = await octokit.request(`GET /repos/${organization}/${repo}/contents/package.json`);
@@ -43,11 +43,12 @@ async function updateDependency(dependedResources, newVersion) {
           console.error(`Error updating dependency for ${organization}/${repo}:`, error.message);
         }
       }
-    });
+    }
   } catch (error) {
     console.error('Error updating dependency:', error.message);
   }
 }
+
 
 
 updateDependency(dependedResources, newVersion);
